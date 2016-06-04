@@ -65,7 +65,7 @@ IcingaWeb2 Database Connection 1
 See the ```deploy_icinga2.yml``` file for changing the Icinga postgres user/role and database details.
 
 
-[database 1]: https://raw.githubusercontent.com/chrisjalinsky/ansible-icinga2/master/wizard_images/database_connection1.png "Icingaweb2 Database details created in Ansible playbook"
+![database 1]: https://raw.githubusercontent.com/chrisjalinsky/ansible-icinga2/master/wizard_images/database_connection1.png "Icingaweb2 Database details created in Ansible playbook"
 
 
 IcingaWeb2 Database Connection 2
@@ -73,13 +73,13 @@ IcingaWeb2 Database Connection 2
 The second database validation uses the details in the ```/etc/icinga2/features-enabled/ido-pgsql.conf``` file, which is output at the end of the ansible playbook as well.
 
 
-[database 2]: https://raw.githubusercontent.com/chrisjalinsky/ansible-icinga2/master/wizard_images/database_connection2.png "Icing IDO Database details created in features file"
+![database 2]: https://raw.githubusercontent.com/chrisjalinsky/ansible-icinga2/master/wizard_images/database_connection2.png "Icing IDO Database details created in features file"
 
 IcingaWeb2 Successful Installation 1
 ------------------------------------
-[database 1]: https://raw.githubusercontent.com/chrisjalinsky/ansible-icinga2/master/wizard_images/icingaweb2_success1.png "Installation success 1"
+![success 1]: https://raw.githubusercontent.com/chrisjalinsky/ansible-icinga2/master/wizard_images/icingaweb2_success1.png "Installation success 1"
 
 
 IcingaWeb2 Successful Installation 2
 ------------------------------------
-[database 2]: https://raw.githubusercontent.com/chrisjalinsky/ansible-icinga2/master/wizard_images/icingaweb2_success2.png "Installation success 2"
+![success 2]: https://raw.githubusercontent.com/chrisjalinsky/ansible-icinga2/master/wizard_images/icingaweb2_success2.png "Installation success 2"
