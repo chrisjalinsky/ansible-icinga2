@@ -1,0 +1,164 @@
+---
+
+- name: Deploy icinga2 icingaweb2 apache2 postgresql
+  hosts: icinga_servers
+  become: yes
+  become_user: root
+  tasks:
+    - name: Set facts for playbook
+      set_fact:
+        icinga_db_users:
+          - name: postgresuser
+            password: pw
+            dbs:
+              - name: icinga_users
+
+    - name: Add icinga apt repo
+      apt_repository:
+        repo: "ppa:formorer/icinga"
+        validate_certs: no
+        update_cache: yes
+
+    - name: Set debconf selections to install postgres db configuration for icinga2
+      debconf:
+        name: icinga2-ido-pgsql
+        question: "icinga2-ido-pgsql/dbconfig-install"
+        value: true
+        vtype: boolean
+    
+    - name: Set debconf selections to enable postgres for icinga2
+      debconf:
+        name: icinga2-ido-pgsql
+        question: "icinga2-ido-pgsql/enable"
+        value: true
+        vtype: boolean
+
+    - name: Add apt packages
+      apt:
+        name: "{{ item }}"
+        update_cache: yes
+        cache_valid_time: 3600
+      with_items:
+        - "icinga2"
+        - "postgresql"
+        - "icinga2-ido-pgsql"
+    
+    - name: Enable ido-psql feature in icinga2
+      shell: "icinga2 feature enable ido-pgsql"
+
+    - name: Enable command feature in icinga2
+      shell: "icinga2 feature enable command"
+
+    - name: Restart icinga2
+      service:
+        name: icinga2
+        state: restarted
+
+    - name: Add icingaweb2 apt key
+      apt_key:
+        url: "http://packages.icinga.org/icinga.key"
+
+    - name: Add icingaweb2 apt repo
+      apt_repository:
+        repo: "deb http://packages.icinga.org/ubuntu icinga-trusty main"
+
+    - name: Add icingaweb2 apt package
+      apt:
+        name: icingaweb2
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Add icingaweb2 system group
+      group:
+        name: icingaweb2
+        system: yes
+
+    - name: Add icingaweb2 group to www-data
+      user:
+        name: www-data
+        groups: icingaweb2
+        append: yes
+
+    - name: Setup icinga config directory for use by group icingaweb2
+      shell: "icingacli setup config directory --group icingaweb2"
+
+    - name: Change ownership of /etc/icingaweb2
+      file:
+        dest: "/etc/icingaweb2"
+        owner: www-data
+        recurse: yes
+        state: directory
+
+    - name: Install additional apt packages
+      apt:
+        name: "{{ item }}"
+        update_cache: yes
+        cache_valid_time: 3600
+      with_items:
+        - "php5-json"
+        - "php5-gd"
+        - "php5-imagick"
+        - "php5-pgsql"
+        - "php5-intl"
+        - "php5-ldap"
+        - "php5-mysql"
+
+    - name: Edit timezone as required by icingaweb2 wizard
+      lineinfile:
+        line: "date.timezone = 'America/Denver'"
+        regexp: ";date.timezone =.*"
+        dest: "/etc/php5/apache2/php.ini"
+
+    - name: Restart Apache2
+      service:
+        name: apache2
+        state: restarted
+
+    - name: Attempt to create postgres roles
+      become_user: postgres
+      become: yes
+      shell: psql -c "CREATE ROLE {{ item.name }} WITH LOGIN PASSWORD '{{ item.password }}'"
+      args:
+        chdir: "/tmp"
+        executable: /bin/bash
+      ignore_errors: yes
+      register: try_create_postgres_roles
+      with_items: "{{ icinga_db_users }}"
+
+    - name: Read output from try create postgres roles task
+      debug:
+        var: try_create_postgres_roles
+
+    - name: Attempt to create dbs for postgres roles
+      become_user: postgres
+      become: yes
+      shell: "createdb -O {{ item.0.name }} {{ item.1.name }}"
+      args:
+        executable: /bin/bash
+      ignore_errors: yes
+      register: try_create_postgres_dbs
+      with_subelements:
+        - "{{ icinga_db_users }}"
+        - dbs
+
+    - name: Read output from try create postgres user task
+      debug:
+        var: try_create_postgres_dbs
+
+    - name: Read Icinga features var file for http wizard
+      shell: cat /etc/icinga2/features-enabled/ido-pgsql.conf
+      register: icinga_ido_pgsql
+
+    - name: Print output from Icinga features var file
+      debug:
+        var: icinga_ido_pgsql.stdout_lines
+
+    - name: Create token for setup
+      shell: icingacli setup token create
+      args:
+        executable: /bin/bash
+      register: icingacli_setup_create_token
+
+    - name: Read output from icingacli setup token create task
+      debug:
+        var: icingacli_setup_create_token.stdout_lines

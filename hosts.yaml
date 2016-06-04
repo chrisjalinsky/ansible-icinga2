@@ -1,0 +1,13 @@
+---
+
+icinga_servers:
+  hosts: [ icinga1.lan ]
+  vars:
+    ansible_ssh_user: vagrant
+    ansible_ssh_private_key_file: "~/.vagrant.d/insecure_private_key"
+all:
+  children: [ icinga_servers ]
+_meta:
+  hostvars:
+    icinga1.lan:
+      vagrant_ip: "192.168.0.10"
