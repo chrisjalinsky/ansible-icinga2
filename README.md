@@ -16,6 +16,10 @@ ansible-playbook ./deploy_icinga2.yml -i inventory.py
 # or here's an alternative way if not using the dynamic inventory hosts.yaml or ssh keys
 
 ansible-playbook ./deploy_icinga2.yml -i some_inventory_source -u vagrant -k -b
+
+-u flag is user
+-k flag is password prompt
+-b flag is become root
 ```
 
 CLI Steps used to create the Icinga IcingaWeb2 Server
