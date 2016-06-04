@@ -1,7 +1,13 @@
 Ansible Playbook to Install Icinga2, IcingaWeb2, PostgreSQL, Apache2
 ====================================================================
 
-There is a Vagrantfile to spin up a Virtualbox Ubuntu 14.04 VM to use the playbook on
+There is a Vagrantfile to spin up a Virtualbox Ubuntu 14.04 VM to use the playbook against.
+
+Dependencies used:
+* Mac OSX El Capitan
+* Ansible 2.0
+* Vagrant 1.8.1
+* Virtualbox 4.3.34
 
 The following playbook utilizes a dynamic inventory source, but the Python script simply parses a static inventory file, hosts.yaml
 ```
@@ -50,3 +56,30 @@ Create Token for wizard:
 ```
 icingacli setup token create 
 ```
+
+Wizard
+======
+
+IcingaWeb2 Database Connection 1
+--------------------------------
+See the ```deploy_icinga2.yml``` file for changing the Icinga postgres user/role and database details.
+
+
+[database 1]: https://raw.githubusercontent.com/chrisjalinsky/ansible-icinga2/master/wizard_images/database_connection1.png "Icingaweb2 Database details created in Ansible playbook"
+
+
+IcingaWeb2 Database Connection 2
+--------------------------------
+The second database validation uses the details in the ```/etc/icinga2/features-enabled/ido-pgsql.conf``` file, which is output at the end of the ansible playbook as well.
+
+
+[database 2]: https://raw.githubusercontent.com/chrisjalinsky/ansible-icinga2/master/wizard_images/database_connection2.png "Icing IDO Database details created in features file"
+
+IcingaWeb2 Successful Installation 1
+------------------------------------
+[database 1]: https://raw.githubusercontent.com/chrisjalinsky/ansible-icinga2/master/wizard_images/icingaweb2_success1.png "Installation success 1"
+
+
+IcingaWeb2 Successful Installation 2
+------------------------------------
+[database 2]: https://raw.githubusercontent.com/chrisjalinsky/ansible-icinga2/master/wizard_images/icingaweb2_success2.png "Installation success 2"
