@@ -1,14 +1,12 @@
-Ansible Playbook for Icinga2, IcingaWeb2, PostgreSQL, Apache2
-=============================================================
+Ansible Playbook to Install Icinga2, IcingaWeb2, PostgreSQL, Apache2
+====================================================================
 
-There is a Vagrantfile to spin up a Virtualbox Ubuntu 14.04 VM to test the following playbook:
-You can specify your own inventory file, just redefine the Ansible group: icinga_servers
+There is a Vagrantfile to spin up a Virtualbox Ubuntu 14.04 VM to use the playbook on
 
 The following playbook utilizes a dynamic inventory source, but the Python script simply parses a static inventory file, hosts.yaml
 ```
 ansible-playbook ./deploy_icinga2.yml -i inventory.py
 ```
-
 
 CLI Steps used to create the Icinga IcingaWeb2 Server
 =====================================================
@@ -52,5 +50,3 @@ Create Token for wizard:
 ```
 icingacli setup token create 
 ```
-
-  
