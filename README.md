@@ -12,6 +12,10 @@ Dependencies used:
 The following playbook utilizes a dynamic inventory source, but the Python script simply parses a static inventory file, hosts.yaml
 ```
 ansible-playbook ./deploy_icinga2.yml -i inventory.py
+
+# or here's an alternative way if not using the dynamic inventory hosts.yaml or ssh keys
+
+ansible-playbook ./deploy_icinga2.yml -i some_inventory_source -u vagrant -k -b
 ```
 
 CLI Steps used to create the Icinga IcingaWeb2 Server
